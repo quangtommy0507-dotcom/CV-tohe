@@ -60,6 +60,7 @@ select,button{font:inherit}
         <option value="trau">Con trâu</option><option value="ga">Con gà</option>
       </select>
       <button class="btn" id="bCam" disabled>📷 Bật camera</button>
+      <button class="btn ghost" id="bDoi" disabled>🔄 Đổi camera trước/sau</button>
       <button class="btn ghost" id="bThu" disabled>Chạy thử cảnh giả lập</button>
     </div>
     <div class="row">
@@ -85,7 +86,7 @@ select,button{font:inherit}
 const $ = id => document.getElementById(id);
 const out = $('out'), octx = out.getContext('2d'), cam = $('cam');
 const grab = document.createElement('canvas'), gctx = grab.getContext('2d', {willReadFrequently: true});
-let py, running = false, busy = false, stream = null, demoTimer = null;
+let py, running = false, busy = false, stream = null, demoTimer = null, huong = 'environment';
 
 function tienDo(p, t){ $('loadBar').style.width = p + '%'; if (t) $('loadTxt').textContent = t; }
 
@@ -202,17 +203,34 @@ async function vongLap(){
   requestAnimationFrame(vongLap);
 }
 
+async function moStream(){
+  const co = {width: {ideal: 1280}, height: {ideal: 720}};
+  try { return await navigator.mediaDevices.getUserMedia({video: {...co, facingMode: {exact: huong}}, audio: false}); }
+  catch (e) { return await navigator.mediaDevices.getUserMedia({video: {...co, facingMode: {ideal: huong}}, audio: false}); }
+}
+
 async function batCamera(){
-  clearInterval(demoTimer);
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: {ideal: 'environment'}, width: {ideal: 1280}, height: {ideal: 720}}, audio: false});
-  } catch (e) { hienDong(['Không mở được camera: ' + e.message + '. Hãy bấm "Cho phép" khi trình duyệt hỏi.']); return; }
+  clearInterval(demoTimer); running = false;
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  try { stream = await moStream(); }
+  catch (e) { hienDong(['Không mở được camera: ' + e.message + '. Hãy bấm "Cho phép" khi trình duyệt hỏi.']); return; }
   cam.srcObject = stream; await cam.play();
+  const daDung = (stream.getVideoTracks()[0].getSettings() || {}).facingMode;
+  if (daDung) huong = daDung;
   running = true;
-  for (const id of ['bB', 'bH', 'bM', 'bS']) $(id).disabled = false;
+  for (const id of ['bB', 'bH', 'bM', 'bS', 'bDoi']) $(id).disabled = false;
   $('boPhan').querySelectorAll('button').forEach(b => b.disabled = false);
-  $('bCam').textContent = '📷 Camera đang bật'; $('bCam').classList.add('ok');
+  $('bCam').textContent = huong === 'user' ? '📷 Đang dùng camera trước' : '📷 Đang dùng camera sau';
+  $('bCam').classList.add('ok');
   vongLap();
+}
+
+async function doiCamera(){
+  const cu = huong;
+  huong = (huong === 'user') ? 'environment' : 'user';
+  await batCamera();
+  if (huong === cu) hienDong(['Máy này chỉ có 1 camera nên không đổi được.']);
+  else hienDong(['Đã đổi sang camera ' + (huong === 'user' ? 'TRƯỚC' : 'SAU') + '. Khung nhìn đã khác nên hãy bấm lại ① Chụp nền và ② Quét tay.']);
 }
 
 function chupNen(){ if (!stream) return; const [d, w, h] = layKhung(); hienDong([py.globals.get('chup_nen')(d, w, h)]); }
@@ -241,6 +259,7 @@ async function chayThu(){
 }
 
 $('bCam').onclick = batCamera;
+$('bDoi').onclick = doiCamera;
 $('bThu').onclick = chayThu;
 $('bB').onclick = chupNen;
 $('bH').onclick = quetTay;
