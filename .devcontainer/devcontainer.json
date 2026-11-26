@@ -1,0 +1,6 @@
+{
+  "name": "CV nặn heo tò he",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "postCreateCommand": "pip install opencv-python-headless numpy pillow && python tao_anh_mau.py",
+  "customizations": { "vscode": { "extensions": ["ms-python.python"] } }
+}
