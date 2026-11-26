@@ -1,0 +1,29 @@
+name: Chấm thử ảnh mẫu (CV nặn heo)
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  cham-anh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Cài thư viện
+        run: pip install opencv-python-headless numpy pillow
+      - name: Tạo ảnh mẫu
+        run: python tao_anh_mau.py
+      - name: Chấm thử tất cả ảnh
+        run: python nan_heo_cv.py --thu-het --khong-hien | tee ket_qua_cham.txt
+      - name: Chạy thử theo dõi tay + tham chiếu bộ phận (cảnh giả lập)
+        run: python theo_doi_nan.py --thu | tee -a ket_qua_cham.txt
+      - name: Lưu ảnh kết quả
+        uses: actions/upload-artifact@v4
+        with:
+          name: ket-qua-cham-anh
+          path: |
+            ket_qua/
+            ket_qua_cham.txt
