@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Chấm thử tất cả ảnh mẫu",
+      "type": "shell",
+      "command": "python tao_anh_mau.py && python nan_heo_cv.py --thu-het --khong-hien",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Thử theo dõi tay + tham chiếu (cảnh giả lập)",
+      "type": "shell",
+      "command": "python theo_doi_nan.py --thu",
+      "problemMatcher": []
+    },
+    {
+      "label": "Theo dõi nặn bằng camera – con lợn",
+      "type": "shell",
+      "command": "python theo_doi_nan.py --nv heo",
+      "problemMatcher": []
+    },
+    {
+      "label": "Chạy camera (chỉ trên máy có camera)",
+      "type": "shell",
+      "command": "python nan_heo_cv.py",
+      "problemMatcher": []
+    }
+  ]
+}
