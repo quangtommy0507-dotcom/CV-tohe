@@ -3,6 +3,12 @@
 Phần **thị giác máy tính (CV)** của dự án *Hộp quà Di sản – Tò He Xuân La*.
 Camera hoặc ảnh chụp → tìm cục bột → đo **độ tròn, kích thước so với thân, độ dẹt, độ dài sợi, màu sắc** → chấm sao và nhận xét cho từng bước nặn **chú heo hồng**: Thân → Hai tai → Mõm → Đuôi.
 
+## 📷 Chạy ngay trên trình duyệt, có camera
+👉 **https://quangtommy0507-dotcom.github.io/CV-tohe/**
+
+Mở link bằng Chrome/Safari (máy tính hoặc điện thoại) → chờ tải Python + OpenCV (20–60 giây lần đầu) → chọn nhân vật → **📷 Bật camera** → **① Chụp nền** → **② Quét tay** → **③ Chụp từng bộ phận** → nặn và xem máy nhận diện.
+Trang này chạy chính file `theo_doi_nan.py` bằng Pyodide; ảnh camera xử lý ngay trên máy, không gửi đi đâu.
+
 ## Chạy ngay trên GitHub (không cần cài gì)
 - **Actions:** mỗi lần đẩy code lên, GitHub tự tạo 14 ảnh mẫu, chấm điểm và lưu ảnh kết quả. Vào tab **Actions**, chọn lần chạy mới nhất, tải mục **ket-qua-cham-anh**.
 - **Codespaces:** bấm **Code → Codespaces → Create codespace on main** để mở VS Code trên trình duyệt (đã cài sẵn OpenCV). Mở Terminal và gõ:
